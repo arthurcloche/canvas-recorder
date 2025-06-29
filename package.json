@@ -1,0 +1,31 @@
+{
+  "name": "canvas-recorder",
+  "version": "1.0.0",
+  "description": "Universal canvas recording library - Lightweight, portable, works with any canvas element",
+  "main": "canvas-recorder.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arthurcloche/canvas-recorder.git"
+  },
+  "keywords": [
+    "canvas",
+    "recording",
+    "video",
+    "webm",
+    "mp4",
+    "creative-coding",
+    "prototyping"
+  ],
+  "author": "Arthur Cloche",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/arthurcloche/canvas-recorder/issues"
+  },
+  "homepage": "https://github.com/arthurcloche/canvas-recorder#readme",
+  "files": [
+    "canvas-recorder.js"
+  ]
+}
