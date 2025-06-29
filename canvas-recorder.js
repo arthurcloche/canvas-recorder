@@ -57,6 +57,18 @@ class CanvasRecorder {
     if (!MediaRecorder.isTypeSupported(mimeType)) {
       this.options.format = "webm";
     }
+
+    // Check if canvas is origin-clean (can be recorded)
+    try {
+      this.canvas.toDataURL("image/png", 0.1);
+    } catch (e) {
+      if (e.name === "SecurityError") {
+        throw new Error(
+          "Canvas contains cross-origin content and cannot be recorded. This is a browser security restriction."
+        );
+      }
+      throw e;
+    }
   }
 
   _getMimeType() {
@@ -197,6 +209,17 @@ class CanvasRecorder {
     return formats;
   }
 
+  static canRecord(canvas) {
+    if (!canvas || !canvas.getContext) return false;
+    if (!canvas.captureStream || !window.MediaRecorder) return false;
+    try {
+      canvas.toDataURL("image/png", 0.1);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   static hide() {
     CanvasRecorder._isHidden = true;
     if (window.CanvasRecorderUI) window.CanvasRecorderUI._hide();
@@ -331,15 +354,28 @@ class CanvasRecorderUI {
       return;
     }
 
+    const recordableCanvases = [];
     canvases.forEach((canvas, i) => {
       if (!canvas.id) canvas.id = `canvas-${i}`;
       const option = document.createElement("option");
       option.value = canvas.id;
-      option.textContent = `${canvas.id} (${canvas.width}×${canvas.height})`;
+
+      const canRecord = CanvasRecorder.canRecord(canvas);
+      const status = canRecord ? "" : " (⚠️ cross-origin)";
+      option.textContent = `${canvas.id} (${canvas.width}×${canvas.height})${status}`;
+
+      if (!canRecord) {
+        option.style.color = "#ffcc00";
+        option.title =
+          "This canvas contains cross-origin content and cannot be recorded";
+      } else {
+        recordableCanvases.push(canvas);
+      }
+
       this.canvasSelect.appendChild(option);
     });
 
-    this.selectedCanvas = canvases[0]?.id;
+    this.selectedCanvas = recordableCanvases[0]?.id || canvases[0]?.id;
   }
 
   _selectCanvas(canvasId) {
@@ -436,7 +472,17 @@ class CanvasRecorderUI {
 
   _onError(error) {
     this._updateUI(false);
-    this._showStatus(`Error: ${error.message}`, "error");
+    let message = `Error: ${error.message}`;
+
+    // Show helpful message for cross-origin error
+    if (error.message.includes("cross-origin")) {
+      message = "⚠️ Cannot record: Canvas has cross-origin content";
+      console.warn(
+        "💡 Canvas Recording Tip: To fix this, the canvas must only contain content from the same domain, or external images must be loaded with crossOrigin='anonymous' and proper CORS headers."
+      );
+    }
+
+    this._showStatus(message, "error");
     console.error("Recording error:", error);
   }
 
