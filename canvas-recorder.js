@@ -1,10 +1,10 @@
 /**
- * Canvas Recorder v1.0.0 - Universal canvas recording library
+ * Canvas Recorder v1.0.2 - Universal canvas recording library
  * Lightweight, portable, works with any canvas element
  */
 
 class CanvasRecorder {
-  static VERSION = "1.0.0";
+  static VERSION = "1.0.2";
   static _isHidden = false;
 
   constructor(canvasId, options = {}) {

@@ -4,8 +4,15 @@ Universal canvas recording library - Lightweight, portable, works with any canva
 
 Perfect for creative coding, prototyping, and capturing canvas animations as video files.
 
-[![jsDelivr](https://img.shields.io/badge/jsDelivr-CDN-orange)](https://cdn.jsdelivr.net/gh/arthurcloche/canvas-recorder@latest/canvas-recorder.js)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+## ⚡ Instant Recording (Most Popular!)
+
+**Paste this into any webpage's console to instantly add canvas recording:**
+
+```javascript
+(function(){const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/gh/arthurcloche/canvas-recorder@v1.0.2/canvas-recorder.js';s.onload=()=>console.log('🎬 Canvas Recorder Ready!');document.head.appendChild(s)})();
+```
+
+Perfect for experimenting on CodePen, creative coding sites, or any page with canvas elements!
 
 ## ✨ Features
 
@@ -17,30 +24,22 @@ Perfect for creative coding, prototyping, and capturing canvas animations as vid
 - 🔍 **Smart validation** - Detects cross-origin issues upfront
 - 📦 **CDN ready** - Available on jsDelivr
 
-## 🚀 Quick Start
+## 🚀 Installation
 
-### Option 1: CDN (Recommended)
+### CDN (Recommended)
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/arthurcloche/canvas-recorder@latest/canvas-recorder.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/arthurcloche/canvas-recorder@v1.0.2/canvas-recorder.js"></script>
 ```
 
 That's it! The recording UI will appear automatically on any page with canvas elements.
 
-### Option 2: Manual Installation
+### Manual Installation
 
 Download `canvas-recorder.js` and include it in your HTML:
 
 ```html
 <script src="canvas-recorder.js"></script>
-```
-
-### Option 3: Console Injection (Perfect for experiments!)
-
-Paste this into any webpage's console:
-
-```javascript
-(function(){const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/gh/arthurcloche/canvas-recorder@latest/canvas-recorder.js';s.onload=()=>console.log('🎬 Ready!');document.head.appendChild(s)})();
 ```
 
 ## 📖 Usage
