@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Recorder Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .subtitle {
+            opacity: 0.8;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .demo-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 25px;
+            transition: transform 0.2s ease;
+        }
+        
+        .demo-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .demo-card h3 {
+            margin: 0 0 15px 0;
+            font-size: 1.3rem;
+        }
+        
+        canvas {
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 280px;
+            height: auto;
+        }
+        
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: left;
+        }
+        
+        .instructions h3 {
+            margin-top: 0;
+            text-align: center;
+        }
+        
+        .instructions ol {
+            line-height: 1.6;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .highlight {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 Canvas Recorder</h1>
+        <p class="subtitle">Universal canvas recording library - Record any canvas with one click!</p>
+        
+        <div class="demo-grid">
+            <div class="demo-card">
+                <h3>🎨 Animated Circles</h3>
+                <canvas id="circles" width="280" height="200"></canvas>
+            </div>
+            
+            <div class="demo-card">
+                <h3>✨ Particle System</h3>
+                <canvas id="particles" width="280" height="200"></canvas>
+            </div>
+            
+            <div class="demo-card">
+                <h3>🌊 Gradient Wave</h3>
+                <canvas id="wave" width="280" height="200"></canvas>
+            </div>
+            
+            <div class="demo-card">
+                <h3>🔺 WebGL Triangle</h3>
+                <canvas id="triangle" width="280" height="200"></canvas>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>🚀 How to Use</h3>
+            <ol>
+                <li>The <span class="highlight">🎬</span> recording widget should appear automatically</li>
+                <li>Select any canvas from the dropdown</li>
+                <li>Click <span class="highlight">⏺ Record</span> to start recording</li>
+                <li>Click <span class="highlight">⏹ Stop</span> to finish (or wait for auto-stop)</li>
+                <li>Your video will download automatically!</li>
+            </ol>
+            
+            <p><strong>💡 Pro tip:</strong> Click the <span class="highlight">▼</span> button to expand settings (duration, quality)</p>
+        </div>
+    </div>
+
+    <!-- Load Canvas Recorder from CDN -->
+    <script src="https://cdn.jsdelivr.net/gh/arthurcloche/canvas-recorder@v1.0.1/canvas-recorder.js"></script>
+    
+    <script>
+        // === ANIMATED CIRCLES ===
+        const circlesCanvas = document.getElementById('circles');
+        const circlesCtx = circlesCanvas.getContext('2d');
+        let circleFrame = 0;
+        
+        function animateCircles() {
+            circlesCtx.fillStyle = '#1a1a2e';
+            circlesCtx.fillRect(0, 0, circlesCanvas.width, circlesCanvas.height);
+            
+            for (let i = 0; i < 5; i++) {
+                const hue = (circleFrame * 2 + i * 60) % 360;
+                circlesCtx.fillStyle = `hsl(${hue}, 70%, 60%)`;
+                circlesCtx.beginPath();
+                
+                const x = Math.sin(circleFrame * 0.02 + i) * 60 + circlesCanvas.width / 2;
+                const y = Math.cos(circleFrame * 0.015 + i) * 40 + circlesCanvas.height / 2;
+                const radius = Math.sin(circleFrame * 0.03 + i) * 8 + 15;
+                
+                circlesCtx.arc(x, y, radius, 0, Math.PI * 2);
+                circlesCtx.fill();
+            }
+            
+            circleFrame++;
+            requestAnimationFrame(animateCircles);
+        }
+        
+        // === PARTICLE SYSTEM ===
+        const particlesCanvas = document.getElementById('particles');
+        const particlesCtx = particlesCanvas.getContext('2d');
+        const particles = [];
+        
+        for (let i = 0; i < 40; i++) {
+            particles.push({
+                x: Math.random() * particlesCanvas.width,
+                y: Math.random() * particlesCanvas.height,
+                vx: (Math.random() - 0.5) * 2,
+                vy: (Math.random() - 0.5) * 2,
+                life: Math.random(),
+                size: Math.random() * 3 + 1
+            });
+        }
+        
+        function animateParticles() {
+            particlesCtx.fillStyle = 'rgba(16, 20, 40, 0.15)';
+            particlesCtx.fillRect(0, 0, particlesCanvas.width, particlesCanvas.height);
+            
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= 0.008;
+                
+                if (p.life <= 0 || p.x < 0 || p.x > particlesCanvas.width || p.y < 0 || p.y > particlesCanvas.height) {
+                    p.x = Math.random() * particlesCanvas.width;
+                    p.y = Math.random() * particlesCanvas.height;
+                    p.vx = (Math.random() - 0.5) * 2;
+                    p.vy = (Math.random() - 0.5) * 2;
+                    p.life = 1;
+                }
+                
+                particlesCtx.fillStyle = `rgba(100, 200, 255, ${p.life})`;
+                particlesCtx.beginPath();
+                particlesCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                particlesCtx.fill();
+            });
+            
+            requestAnimationFrame(animateParticles);
+        }
+        
+        // === GRADIENT WAVE ===
+        const waveCanvas = document.getElementById('wave');
+        const waveCtx = waveCanvas.getContext('2d');
+        let waveFrame = 0;
+        
+        function animateWave() {
+            const gradient = waveCtx.createLinearGradient(0, 0, 0, waveCanvas.height);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(0.5, '#764ba2');
+            gradient.addColorStop(1, '#f093fb');
+            
+            waveCtx.fillStyle = gradient;
+            waveCtx.fillRect(0, 0, waveCanvas.width, waveCanvas.height);
+            
+            waveCtx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+            waveCtx.beginPath();
+            waveCtx.moveTo(0, waveCanvas.height);
+            
+            for (let x = 0; x <= waveCanvas.width; x += 3) {
+                const y = Math.sin((x * 0.02) + (waveFrame * 0.05)) * 25 + waveCanvas.height / 2;
+                waveCtx.lineTo(x, y);
+            }
+            
+            waveCtx.lineTo(waveCanvas.width, waveCanvas.height);
+            waveCtx.closePath();
+            waveCtx.fill();
+            
+            waveFrame++;
+            requestAnimationFrame(animateWave);
+        }
+        
+        // === WEBGL TRIANGLE ===
+        const webglCanvas = document.getElementById('triangle');
+        const gl = webglCanvas.getContext('webgl');
+        
+        if (gl) {
+            const vertexShader = `
+                attribute vec2 a_position;
+                attribute vec3 a_color;
+                varying vec3 v_color;
+                uniform float u_time;
+                
+                void main() {
+                    vec2 pos = a_position;
+                    pos.x += sin(u_time * 0.001) * 0.2;
+                    pos.y += cos(u_time * 0.0015) * 0.1;
+                    gl_Position = vec4(pos, 0.0, 1.0);
+                    v_color = a_color;
+                }
+            `;
+            
+            const fragmentShader = `
+                precision mediump float;
+                varying vec3 v_color;
+                
+                void main() {
+                    gl_FragColor = vec4(v_color, 1.0);
+                }
+            `;
+            
+            function createShader(type, source) {
+                const shader = gl.createShader(type);
+                gl.shaderSource(shader, source);
+                gl.compileShader(shader);
+                return shader;
+            }
+            
+            const program = gl.createProgram();
+            gl.attachShader(program, createShader(gl.VERTEX_SHADER, vertexShader));
+            gl.attachShader(program, createShader(gl.FRAGMENT_SHADER, fragmentShader));
+            gl.linkProgram(program);
+            
+            const vertices = new Float32Array([
+                0.0,  0.6,   1.0, 0.3, 0.5,
+                -0.5, -0.3,  0.3, 1.0, 0.5,
+                0.5, -0.3,   0.5, 0.3, 1.0
+            ]);
+            
+            const buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+            gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+            
+            const positionLocation = gl.getAttribLocation(program, 'a_position');
+            const colorLocation = gl.getAttribLocation(program, 'a_color');
+            const timeLocation = gl.getUniformLocation(program, 'u_time');
+            
+            let startTime = Date.now();
+            
+            function drawWebGL() {
+                gl.viewport(0, 0, webglCanvas.width, webglCanvas.height);
+                gl.clearColor(0.1, 0.1, 0.2, 1.0);
+                gl.clear(gl.COLOR_BUFFER_BIT);
+                
+                gl.useProgram(program);
+                gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+                
+                gl.enableVertexAttribArray(positionLocation);
+                gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 20, 0);
+                
+                gl.enableVertexAttribArray(colorLocation);
+                gl.vertexAttribPointer(colorLocation, 3, gl.FLOAT, false, 20, 8);
+                
+                gl.uniform1f(timeLocation, Date.now() - startTime);
+                
+                gl.drawArrays(gl.TRIANGLES, 0, 3);
+                requestAnimationFrame(drawWebGL);
+            }
+            
+            drawWebGL();
+        } else {
+            // Fallback for browsers without WebGL
+            const ctx = webglCanvas.getContext('2d');
+            ctx.fillStyle = '#764ba2';
+            ctx.fillRect(0, 0, webglCanvas.width, webglCanvas.height);
+            ctx.fillStyle = 'white';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('WebGL not available', webglCanvas.width/2, webglCanvas.height/2);
+        }
+        
+        // Start all animations
+        animateCircles();
+        animateParticles();
+        animateWave();
+    </script>
+</body>
+</html> 
